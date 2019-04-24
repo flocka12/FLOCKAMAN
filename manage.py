@@ -1,0 +1,36 @@
+''' module to create database migrations '''
+import argparse
+from DB.db_con import db_init
+from DB.db_queries import drop_tables, create_tables, truncate, seed
+
+def migrate():
+    ''' create db migrations '''
+    drop_tables()
+    create_tables()
+    truncate()
+    seed()
+
+if __name__ == "__main__":
+
+    PARSER = argparse.ArgumentParser(
+        description='Database management tool for flocka_records')
+
+    PARSER.add_argument(
+        '-a', '--action', metavar='[migrate|truncate|seed]', help='Database action',
+        choices={'migrate', 'truncate', 'seed'}, const='migrate', nargs='?')
+
+    ARGS = PARSER.parse_args()
+
+# open database connection
+    BASE_CONN = db_init()
+
+    if ARGS.action == 'migrate':
+        migrate()
+    elif ARGS.action == 'truncate':
+        truncate()
+    elif ARGS.action == 'seed':
+        seed()
+    else:
+        pass
+    BASE_CONN.commit()
+# close connection here
